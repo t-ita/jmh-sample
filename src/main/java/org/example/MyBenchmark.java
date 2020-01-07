@@ -45,53 +45,70 @@ import java.util.stream.Collectors;
 public class MyBenchmark {
 
     @Benchmark
-    public void sortByListSortWithComparingInt() {
+    public List<Integer> sortByListSortWithComparingInt() {
         List<Integer> intList = new Random().ints(100000L).boxed().collect(Collectors.toList());
 
         // コンパレータを使って、プリミティブな int 値を比較する方法
         intList.sort(Comparator.comparingInt(Integer::intValue));
+
+        return intList;
     }
 
     @Benchmark
-    public void sortByListSortWithNaturalOrder() {
+    public List<Integer> sortByListSortWithNaturalOrder() {
         List<Integer> intList = new Random().ints(100000L).boxed().collect(Collectors.toList());
 
         // コンパレータで、自然順序でラブ用に指定したソート方法
         intList.sort(Comparator.naturalOrder());
+
+        return intList;
     }
 
     @Benchmark
-    public void sortByCollectionsSort() {
+    public List<Integer> sortByCollectionsSort() {
         List<Integer> intList = new Random().ints(100000L).boxed().collect(Collectors.toList());
 
         // Collections のスタティッククラスを使う方法
         Collections.sort(intList);
+
+        return intList;
     }
 
     @Benchmark
-    public void sortByArrayParallelSort() {
-        int[] intArray = new Random().ints(100000L).toArray();
+    public List<Integer> sortByArrayParallelSort() {
+        List<Integer> intList = new Random().ints(100000L).boxed().collect(Collectors.toList());
 
         // 配列のパラレルソートを使う方法
+        Integer[] intArray = intList.toArray(new Integer[0]);
         Arrays.parallelSort(intArray);
+
+        return Arrays.asList(intArray);
     }
 
     @Benchmark
-    public void sortBySortedSet() {
+    public List<Integer> sortBySortedSet() {
+        List<Integer> intList = new Random().ints(100000L).boxed().collect(Collectors.toList());
+
         // SortedSet を利用して、赤黒木のアルゴリズムを使うソート方法（※重複がないこと前提）
-        SortedSet<Integer> intSet = new Random().ints(100000L).boxed().collect(Collectors.toCollection(TreeSet::new));
+        SortedSet<Integer> intSet = new TreeSet<>(intList);
+
+        return new ArrayList<>(intSet);
     }
 
     @Benchmark
-    public void sortByStreamSort() {
+    public List<Integer> sortByStreamSort() {
+        List<Integer> intList = new Random().ints(100000L).boxed().collect(Collectors.toList());
+
         // ストリームのソート機能を使う方法
-        List<Integer> intList = new Random().ints(100000L).sorted().boxed().collect(Collectors.toList());
+        return intList.stream().sorted().collect(Collectors.toList());
     }
 
     @Benchmark
-    public void sortByParallelStreamSort() {
+    public List<Integer> sortByParallelStreamSort() {
+        List<Integer> intList = new Random().ints(100000L).boxed().collect(Collectors.toList());
+
         // パラレルストリームのソート機能を使う方法
-        List<Integer> intList = new Random().ints(100000L).parallel().sorted().boxed().collect(Collectors.toList());
+        return intList.stream().parallel().sorted().collect(Collectors.toList());
     }
 
 }
